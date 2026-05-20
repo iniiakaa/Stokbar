@@ -216,8 +216,11 @@ def api_export_xlsx():
 # Main
 # ============================================================
 
+# Tambahkan ini agar Vercel dapat mendeteksi aplikasi Flask
+app = app
+
 if __name__ == "__main__":
     db.init_db()
     print("[Stokbar] Database siap.")
-    print("[Stokbar] Server berjalan di http://localhost:8080")
     app.run(debug=True, host="0.0.0.0", port=8080)
+
