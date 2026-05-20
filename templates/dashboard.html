@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Stokbar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading-screen" class="loading-screen">
+  <div class="loading-content">
+    <div class="loading-logo"><i class="bi bi-box-seam-fill"></i></div>
+    <h1 class="loading-title">Stokbar</h1>
+    <p class="loading-subtitle">Memuat dashboard...</p>
+    <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" class="app-layout" style="display:none;">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-icon"><i class="bi bi-box-seam-fill"></i></div>
+        <div>
+          <div class="sidebar-brand-name">Stokbar</div>
+          <div class="sidebar-brand-sub">Inventory System</div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Menu Utama</div>
+      <a href="#" class="nav-link active" data-page="dashboard" onclick="App.navigate('dashboard');return false;">
+        <i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span>
+      </a>
+      <a href="#" class="nav-link" data-page="master" onclick="App.navigate('master');return false;">
+        <i class="bi bi-archive-fill"></i><span>Master Barang</span>
+      </a>
+      <div class="nav-section-label" style="margin-top:.5rem">Transaksi</div>
+      <a href="#" class="nav-link" data-page="masuk" onclick="App.navigate('masuk');return false;">
+        <i class="bi bi-arrow-down-circle-fill"></i><span>Barang Masuk</span>
+      </a>
+      <a href="#" class="nav-link" data-page="keluar" onclick="App.navigate('keluar');return false;">
+        <i class="bi bi-arrow-up-circle-fill"></i><span>Barang Keluar</span>
+      </a>
+      <div class="nav-section-label" style="margin-top:.5rem">Analitik</div>
+      <a href="#" class="nav-link" data-page="laporan" onclick="App.navigate('laporan');return false;">
+        <i class="bi bi-file-earmark-bar-graph-fill"></i><span>Laporan</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="su-avatar">{{ name[0]|upper }}</div>
+        <div class="su-info">
+          <span class="su-name">{{ name }}</span>
+          <span class="su-role">{{ role }}</span>
+        </div>
+        <a href="/logout" class="su-logout" title="Logout"><i class="bi bi-box-arrow-right"></i></a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="sidebar-toggle" onclick="App.toggleSidebar()"><i class="bi bi-list"></i></button>
+        <div class="topbar-breadcrumb">
+          <h1 class="page-title" id="page-title">Dashboard</h1>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="notification-wrapper" id="notification-wrapper">
+          <button class="notification-bell" onclick="App.toggleNotifications()">
+            <i class="bi bi-bell-fill"></i>
+            <span class="notification-badge" id="notification-badge" style="display:none">0</span>
+          </button>
+          <div class="notification-dropdown" id="notification-dropdown">
+            <div class="notification-header"><h4><i class="bi bi-exclamation-triangle-fill"></i> Stok Menipis</h4></div>
+            <div class="notification-list" id="notification-list"></div>
+          </div>
+        </div>
+        <div class="topbar-clock" id="topbar-clock"></div>
+      </div>
+    </header>
+
+    <div class="page-container">
+
+      <!-- DASHBOARD -->
+      <div id="page-dashboard" class="page active">
+        <div class="metrics-grid">
+          <div class="metric-card"><div class="metric-icon" style="--c:#6366f1"><i class="bi bi-archive-fill"></i></div><div class="metric-info"><div class="metric-value" id="val-total-barang">0</div><div class="metric-label">Jenis Barang</div></div></div>
+          <div class="metric-card"><div class="metric-icon" style="--c:#8b5cf6"><i class="bi bi-boxes"></i></div><div class="metric-info"><div class="metric-value" id="val-total-stok">0</div><div class="metric-label">Total Unit Stok</div></div></div>
+          <div class="metric-card"><div class="metric-icon" style="--c:#10b981"><i class="bi bi-arrow-down-circle-fill"></i></div><div class="metric-info"><div class="metric-value" id="val-masuk-bulan">0</div><div class="metric-label">Masuk Bulan Ini</div></div></div>
+          <div class="metric-card"><div class="metric-icon" style="--c:#f59e0b"><i class="bi bi-arrow-up-circle-fill"></i></div><div class="metric-info"><div class="metric-value" id="val-keluar-bulan">0</div><div class="metric-label">Keluar Bulan Ini</div></div></div>
+          <div class="metric-card"><div class="metric-icon" style="--c:#06b6d4"><i class="bi bi-cash-stack"></i></div><div class="metric-info"><div class="metric-value" id="val-inventaris">Rp 0</div><div class="metric-label">Nilai Inventaris</div></div></div>
+          <div class="metric-card metric-card-alert"><div class="metric-icon" style="--c:#ef4444"><i class="bi bi-exclamation-triangle-fill"></i></div><div class="metric-info"><div class="metric-value" id="val-stok-menipis">0</div><div class="metric-label">Stok Menipis</div></div></div>
+        </div>
+        <div class="dashboard-grid">
+          <div class="card chart-card"><div class="card-header"><h3><i class="bi bi-bar-chart-line-fill"></i> Tren Stok 7 Hari Terakhir</h3></div><div class="card-body"><canvas id="chart-tren" height="260"></canvas></div></div>
+          <div class="card"><div class="card-header"><h3><i class="bi bi-clock-history"></i> Transaksi Terbaru</h3></div><div class="card-body"><div class="recent-list" id="recent-list"></div></div></div>
+        </div>
+      </div>
+
+      <!-- MASTER BARANG -->
+      <div id="page-master" class="page">
+        <div class="page-actions">
+          <div class="search-box"><i class="bi bi-search"></i><input type="text" id="master-search" placeholder="Cari nama, kode, atau kategori..." oninput="Master.search(this.value)"></div>
+          <button class="btn btn-primary" onclick="Master.showAddModal()"><i class="bi bi-plus-lg"></i> Tambah Barang</button>
+        </div>
+        <div class="card">
+          <div class="card-body" style="padding:0">
+            <div class="table-responsive">
+              <table class="data-table" id="master-table">
+                <thead><tr>
+                  <th style="width:44px">Foto</th>
+                  <th class="sortable" onclick="Master.sort('kode_barang')">Kode <i class="bi bi-arrow-down-up" style="font-size:.6rem;opacity:.5"></i></th>
+                  <th class="sortable" onclick="Master.sort('nama_barang')">Nama <i class="bi bi-arrow-down-up" style="font-size:.6rem;opacity:.5"></i></th>
+                  <th>Kategori</th><th>Satuan</th>
+                  <th class="text-right">Harga Beli</th>
+                  <th class="text-right">Harga Jual</th>
+                  <th class="text-center sortable" onclick="Master.sort('stok')">Stok <i class="bi bi-arrow-down-up" style="font-size:.6rem;opacity:.5"></i></th>
+                  <th class="text-center">Status</th>
+                  <th class="text-center">Aksi</th>
+                </tr></thead>
+                <tbody id="master-tbody"></tbody>
+              </table>
+            </div>
+            <div class="table-footer">
+              <span class="table-info" id="master-info">Menampilkan 0 data</span>
+              <div class="pagination" id="master-pagination"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BARANG MASUK -->
+      <div id="page-masuk" class="page">
+        <div class="transaction-layout">
+          <div class="card"><div class="card-header"><h3><i class="bi bi-arrow-down-circle-fill" style="color:#10b981"></i> Form Barang Masuk</h3></div>
+            <div class="card-body"><form id="form-masuk" onsubmit="Transaksi.submitMasuk(event)">
+              <div class="form-group"><label>Pilih Barang</label><select id="masuk-kode" required><option value="">Pilih Barang</option></select></div>
+              <div class="form-group"><label>Info Barang</label><div class="barang-info-card" id="masuk-info"><span class="info-placeholder">Pilih barang untuk melihat info</span></div></div>
+              <div class="form-group"><label>Jumlah Masuk</label><input type="number" id="masuk-jumlah" min="1" required placeholder="0"></div>
+              <div class="form-group"><label>Keterangan</label><input type="text" id="masuk-keterangan" placeholder="Opsional"></div>
+              <button type="submit" class="btn btn-success btn-block"><i class="bi bi-check-circle-fill"></i> Simpan Transaksi Masuk</button>
+            </form></div>
+          </div>
+          <div class="card"><div class="card-header"><h3><i class="bi bi-clock-history"></i> Riwayat Barang Masuk</h3></div>
+            <div class="card-body" style="padding:0"><div class="table-responsive"><table class="data-table"><thead><tr><th>Tanggal</th><th>Kode</th><th>Nama Barang</th><th class="text-center">Jumlah</th><th>Keterangan</th></tr></thead><tbody id="masuk-tbody"></tbody></table></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BARANG KELUAR -->
+      <div id="page-keluar" class="page">
+        <div class="transaction-layout">
+          <div class="card"><div class="card-header"><h3><i class="bi bi-arrow-up-circle-fill" style="color:#f59e0b"></i> Form Barang Keluar</h3></div>
+            <div class="card-body"><form id="form-keluar" onsubmit="Transaksi.submitKeluar(event)">
+              <div class="form-group"><label>Pilih Barang</label><select id="keluar-kode" required><option value="">Pilih Barang</option></select></div>
+              <div class="form-group"><label>Info Barang</label><div class="barang-info-card" id="keluar-info"><span class="info-placeholder">Pilih barang untuk melihat info</span></div></div>
+              <div class="form-group"><label>Jumlah Keluar</label><input type="number" id="keluar-jumlah" min="1" required placeholder="0"></div>
+              <div class="form-group"><label>Keterangan</label><input type="text" id="keluar-keterangan" placeholder="Opsional"></div>
+              <button type="submit" class="btn btn-warning btn-block"><i class="bi bi-check-circle-fill"></i> Simpan Transaksi Keluar</button>
+            </form></div>
+          </div>
+          <div class="card"><div class="card-header"><h3><i class="bi bi-clock-history"></i> Riwayat Barang Keluar</h3></div>
+            <div class="card-body" style="padding:0"><div class="table-responsive"><table class="data-table"><thead><tr><th>Tanggal</th><th>Kode</th><th>Nama Barang</th><th class="text-center">Jumlah</th><th>Keterangan</th></tr></thead><tbody id="keluar-tbody"></tbody></table></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LAPORAN -->
+      <div id="page-laporan" class="page">
+        <div class="card" style="margin-bottom:1rem"><div class="card-header"><h3><i class="bi bi-funnel-fill"></i> Filter Laporan</h3></div>
+          <div class="card-body"><div class="filter-row">
+            <div class="form-group"><label>Dari Tanggal</label><input type="date" id="laporan-start"></div>
+            <div class="form-group"><label>Sampai Tanggal</label><input type="date" id="laporan-end"></div>
+            <button class="btn btn-primary" onclick="Laporan.load()"><i class="bi bi-search"></i> Tampilkan</button>
+            <button class="btn btn-outline btn-sm" onclick="Laporan.exportCSV()"><i class="bi bi-filetype-csv"></i> CSV</button>
+            <button class="btn btn-success btn-sm" onclick="Laporan.exportXLSX()"><i class="bi bi-file-earmark-excel-fill"></i> XLSX</button>
+          </div></div>
+        </div>
+        <div class="laporan-summary" id="laporan-summary" style="display:none">
+          <div class="summary-card summary-masuk"><i class="bi bi-arrow-down-circle-fill" style="font-size:1.5rem"></i><div><span class="summary-value" id="lap-total-masuk">0</span><span class="summary-label">Total Masuk</span></div></div>
+          <div class="summary-card summary-keluar"><i class="bi bi-arrow-up-circle-fill" style="font-size:1.5rem"></i><div><span class="summary-value" id="lap-total-keluar">0</span><span class="summary-label">Total Keluar</span></div></div>
+          <div class="summary-card summary-transaksi"><i class="bi bi-receipt" style="font-size:1.5rem"></i><div><span class="summary-value" id="lap-total-transaksi">0</span><span class="summary-label">Total Transaksi</span></div></div>
+        </div>
+        <div class="card"><div class="card-body" style="padding:0"><div class="table-responsive">
+          <table class="data-table"><thead><tr><th>Tanggal</th><th>Kode</th><th>Nama Barang</th><th>Kategori</th><th class="text-center">Tipe</th><th class="text-center">Jumlah</th><th>Keterangan</th></tr></thead>
+          <tbody id="laporan-tbody"><tr><td colspan="7" class="text-center text-muted" style="padding:2rem">Klik "Tampilkan" untuk memuat data</td></tr></tbody></table>
+        </div></div></div>
+      </div>
+
+    </div><!-- /page-container -->
+  </main>
+</div><!-- /app -->
+
+<!-- MODAL BARANG -->
+<div class="modal-overlay" id="modal-barang" style="display:none">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3 id="modal-barang-title">Tambah Barang Baru</h3>
+      <button class="modal-close" onclick="Master.closeModal()"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="form-barang" onsubmit="Master.submitForm(event)">
+        <input type="hidden" id="form-mode" value="add">
+        <input type="hidden" id="form-old-kode" value="">
+        <input type="hidden" id="form-foto" value="">
+
+        <!-- Image Upload -->
+        <div class="form-group">
+          <label>Foto Barang</label>
+          <div class="img-upload-zone" id="upload-zone">
+            <input type="file" id="foto-file" accept="image/*" onchange="Master.handleFileSelect(this)">
+            <div id="upload-placeholder">
+              <div class="upload-icon"><i class="bi bi-image"></i></div>
+              <div class="upload-text">Klik atau drag foto barang</div>
+              <div class="upload-hint">JPG, PNG, WEBP — maks 5MB</div>
+            </div>
+            <div id="upload-preview-wrap" style="display:none">
+              <img id="img-preview" class="img-preview" src="" alt="Preview">
+              <button type="button" class="img-preview-remove" onclick="Master.clearImage(event)" title="Hapus foto">
+                <i class="bi bi-x"></i>
+              </button>
+            </div>
+          </div>
+          <div id="upload-status" style="display:none" class="img-uploading">
+            <i class="bi bi-arrow-repeat spin"></i> Mengupload gambar...
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group"><label>Kode Barang</label><input type="text" id="form-kode" required placeholder="BRG001"></div>
+          <div class="form-group"><label>Nama Barang</label><input type="text" id="form-nama" required placeholder="Nama barang"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Kategori</label><input type="text" id="form-kategori" placeholder="Makanan, dll" list="kategori-list"><datalist id="kategori-list"></datalist></div>
+          <div class="form-group"><label>Satuan</label><input type="text" id="form-satuan" value="pcs" placeholder="pcs, kg, liter"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Harga Beli (Rp)</label><input type="number" id="form-harga-beli" min="0" value="0" required></div>
+          <div class="form-group"><label>Harga Jual (Rp)</label><input type="number" id="form-harga-jual" min="0" value="0" required></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Stok Awal</label><input type="number" id="form-stok" min="0" value="0" required></div>
+          <div class="form-group"><label>Stok Minimum</label><input type="number" id="form-stok-min" min="0" value="5" required></div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" onclick="Master.closeModal()">Batal</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-barang"><i class="bi bi-check-lg"></i> Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- IMAGE PREVIEW MODAL -->
+<div id="img-view-modal" style="display:none" onclick="this.style.display='none'">
+  <div class="img-modal-overlay">
+    <button class="close-btn"><i class="bi bi-x-lg"></i></button>
+    <img id="img-view-src" src="" alt="Preview">
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

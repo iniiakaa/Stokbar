@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stokbar Smart Inventory Management</title>
+  <meta name="description" content="Kelola stok barang bisnis Anda dengan mudah, cepat, dan akurat bersama Stokbar.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-icon"><i class="bi bi-box-seam-fill"></i></div>
+      <span class="nav-logo-name">Stokbar</span>
+    </a>
+    <div class="nav-links">
+      <a href="#features">Fitur</a>
+      <a href="#stats">Statistik</a>
+      <a href="#testimonial">Testimoni</a>
+    </div>
+    <a href="/login" class="nav-cta"><i class="bi bi-box-arrow-in-right"></i> Masuk</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+  <div class="grid-bg"></div>
+
+  <div class="hero-inner">
+    <!-- LEFT -->
+    <div class="hero-content">
+      <div class="hero-badge"><i class="bi bi-stars"></i> Inventory Management Generasi Baru</div>
+      <h1 class="hero-title">Kelola Stok Lebih <span class="gradient-text">Cerdas</span>,<br>Bisnis Lebih Maju</h1>
+      <p class="hero-desc">Stokbar adalah solusi manajemen inventaris modern yang intuitif. Pantau stok real-time, catat transaksi, dan ekspor laporan dalam hitungan detik.</p>
+      <div class="hero-actions">
+        <a href="/login" class="btn-primary-hero"><i class="bi bi-rocket-takeoff-fill"></i> Mulai Sekarang</a>
+        <a href="#features" class="btn-ghost-hero"><i class="bi bi-play-circle"></i> Pelajari Fitur</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hs-item"><div class="hs-num">12+</div><div class="hs-lbl">Kategori Barang</div></div>
+        <div class="hs-div"></div>
+        <div class="hs-item"><div class="hs-num">99.9%</div><div class="hs-lbl">Akurasi Data</div></div>
+        <div class="hs-div"></div>
+        <div class="hs-item"><div class="hs-num">Real-time</div><div class="hs-lbl">Update Stok</div></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Mockup -->
+    <div class="hero-visual">
+      <div class="mockup-float" id="mockup-tilt">
+        <div class="mockup-card">
+          <div class="mockup-topbar-win">
+            <span class="win-dot r"></span><span class="win-dot y"></span><span class="win-dot g"></span>
+            <span>Stokbar Dashboard</span>
+          </div>
+          <div class="mockup-body">
+            <div class="mock-sidebar">
+              <div class="mock-brand"><i class="bi bi-box-seam-fill"></i> Stokbar</div>
+              <div class="mock-link active"><i class="bi bi-grid-1x2-fill"></i> Dashboard</div>
+              <div class="mock-link"><i class="bi bi-archive-fill"></i> Master Barang</div>
+              <div class="mock-link"><i class="bi bi-arrow-down-circle"></i> Barang Masuk</div>
+              <div class="mock-link"><i class="bi bi-arrow-up-circle"></i> Barang Keluar</div>
+              <div class="mock-link"><i class="bi bi-bar-chart-fill"></i> Laporan</div>
+            </div>
+            <div class="mock-main">
+              <div class="mock-header">Dashboard <div class="mock-dot-live"></div></div>
+              <div class="mock-cards">
+                <div class="mock-card purple"><div class="mc-val">12</div><div class="mc-lbl">Jenis Barang</div></div>
+                <div class="mock-card green"><div class="mc-val">247</div><div class="mc-lbl">Total Stok</div></div>
+                <div class="mock-card amber"><div class="mc-val">83</div><div class="mc-lbl">Masuk Bulan</div></div>
+                <div class="mock-card cyan"><div class="mc-val">Rp 4.2M</div><div class="mc-lbl">Inventaris</div></div>
+              </div>
+              <div class="mock-chart">
+                <div class="m-bar in" style="height:55%"></div>
+                <div class="m-bar out" style="height:30%"></div>
+                <div class="m-bar in" style="height:75%"></div>
+                <div class="m-bar out" style="height:45%"></div>
+                <div class="m-bar in" style="height:90%"></div>
+                <div class="m-bar out" style="height:55%"></div>
+                <div class="m-bar in" style="height:70%"></div>
+                <div class="m-bar out" style="height:40%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="badge-float badge-float-1"><i class="bi bi-check-circle-fill"></i> Stok diperbarui otomatis</div>
+        <div class="badge-float badge-float-2"><i class="bi bi-bell-fill"></i> 3 stok menipis</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-cue">
+    <span>Scroll</span>
+    <div class="scroll-arrow"><i class="bi bi-chevron-down" style="font-size:.65rem"></i></div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section features-bg" id="features">
+  <div class="section-inner">
+    <div class="section-tag">Fitur Unggulan</div>
+    <h2 class="section-title">Semua yang Anda Butuhkan,<br><span class="gradient-text">Dalam Satu Platform</span></h2>
+    <div class="features-grid">
+      <div class="feature-card" data-reveal>
+        <div class="fc-icon" style="--ic:#6366f1"><i class="bi bi-grid-1x2-fill"></i></div>
+        <h3>Dashboard Real-time</h3>
+        <p>Pantau semua metrik penting secara langsung — total barang, nilai inventaris, dan tren transaksi 7 hari terakhir.</p>
+      </div>
+      <div class="feature-card" data-reveal>
+        <div class="fc-icon" style="--ic:#10b981"><i class="bi bi-arrow-down-circle-fill"></i></div>
+        <h3>Pencatatan Transaksi</h3>
+        <p>Catat barang masuk dan keluar dengan mudah. Stok diperbarui secara otomatis setiap kali transaksi dicatat.</p>
+      </div>
+      <div class="feature-card" data-reveal>
+        <div class="fc-icon" style="--ic:#f59e0b"><i class="bi bi-bell-fill"></i></div>
+        <h3>Alert Stok Menipis</h3>
+        <p>Notifikasi otomatis saat stok mendekati batas minimum. Tidak akan kehabisan barang lagi.</p>
+      </div>
+      <div class="feature-card" data-reveal>
+        <div class="fc-icon" style="--ic:#06b6d4"><i class="bi bi-file-earmark-excel-fill"></i></div>
+        <h3>Ekspor Laporan</h3>
+        <p>Ekspor data laporan ke format CSV atau Excel dengan filter tanggal yang fleksibel dan cepat.</p>
+      </div>
+      <div class="feature-card" data-reveal>
+        <div class="fc-icon" style="--ic:#8b5cf6"><i class="bi bi-image-fill"></i></div>
+        <h3>Foto Barang</h3>
+        <p>Upload foto untuk setiap barang. Preview langsung di tabel dan modal untuk identifikasi yang lebih mudah.</p>
+      </div>
+      <div class="feature-card" data-reveal>
+        <div class="fc-icon" style="--ic:#ef4444"><i class="bi bi-shield-lock-fill"></i></div>
+        <h3>Akses Aman</h3>
+        <p>Sistem login berbasis sesi memastikan hanya pengguna terotorisasi yang dapat mengakses data inventaris.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARALLAX QUOTE -->
+<div class="parallax-quote" id="parallax-quote">
+  <div class="pq-bg" id="pq-bg"></div>
+  <div class="pq-content">
+    <p class="pq-quote">"Manajemen stok yang baik adalah fondasi bisnis yang <em>kuat dan berkelanjutan</em>."</p>
+    <p class="pq-sub">Mulai kelola inventaris Anda hari ini dengan Stokbar.</p>
+  </div>
+</div>
+
+<!-- STATS -->
+<section class="section" id="stats">
+  <div class="section-inner">
+    <div class="section-tag">Angka Berbicara</div>
+    <h2 class="section-title">Dipercaya untuk <span class="gradient-text">Kebutuhan Nyata</span></h2>
+    <div class="stats-grid">
+      <div class="stat-item" data-reveal>
+        <div class="stat-num" data-target="12"><span id="cnt-1">0</span><span class="stat-suffix">+</span></div>
+        <div class="stat-lbl">Kategori Produk</div>
+      </div>
+      <div class="stat-item" data-reveal>
+        <div class="stat-num" data-target="500"><span id="cnt-2">0</span><span class="stat-suffix">+</span></div>
+        <div class="stat-lbl">Transaksi per Bulan</div>
+      </div>
+      <div class="stat-item" data-reveal>
+        <div class="stat-num"><span id="cnt-3">0</span><span class="stat-suffix">%</span></div>
+        <div class="stat-lbl">Akurasi Stok</div>
+        <span data-target="99" data-el="cnt-3" style="display:none"></span>
+      </div>
+      <div class="stat-item" data-reveal>
+        <div class="stat-num"><span id="cnt-4">0</span><span class="stat-suffix">s</span></div>
+        <div class="stat-lbl">Waktu Load Dashboard</div>
+        <span data-target="3" data-el="cnt-4" style="display:none"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section features-bg" id="testimonial">
+  <div class="section-inner">
+    <div class="section-tag">Testimoni</div>
+    <h2 class="section-title">Apa Kata <span class="gradient-text">Pengguna Kami</span></h2>
+    <div class="testi-grid">
+      <div class="testi-card" data-reveal>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Stokbar benar-benar mengubah cara saya mengelola stok toko. Sekarang semua tercatat rapi dan mudah diakses kapan saja!"</p>
+        <div class="testi-author">
+          <div class="testi-av">A</div>
+          <div><div class="testi-name">Ahmad Fauzi</div><div class="testi-role">Pemilik Toko Sembako</div></div>
+        </div>
+      </div>
+      <div class="testi-card" data-reveal>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Fitur ekspor Excel sangat membantu untuk laporan bulanan. Interface-nya modern dan nyaman digunakan setiap hari."</p>
+        <div class="testi-author">
+          <div class="testi-av">S</div>
+          <div><div class="testi-name">Siti Rahayu</div><div class="testi-role">Manajer Gudang</div></div>
+        </div>
+      </div>
+      <div class="testi-card" data-reveal>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Alert stok menipis membuat saya tidak pernah kehabisan barang. Sangat membantu operasional bisnis sehari-hari!"</p>
+        <div class="testi-author">
+          <div class="testi-av">B</div>
+          <div><div class="testi-name">Budi Santoso</div><div class="testi-role">Distributor Barang Kebutuhan</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-box">
+    <h2>Siap Kelola Stok Lebih Efisien?</h2>
+    <p>Masuk ke dashboard dan mulai optimalkan inventaris bisnis Anda sekarang juga.</p>
+    <a href="/login" class="btn-cta-white"><i class="bi bi-rocket-takeoff-fill"></i> Masuk ke Dashboard</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <div class="footer-logo-icon"><i class="bi bi-box-seam-fill"></i></div>
+      Stokbar
+    </div>
+    <span class="footer-copy">© 2025 Stokbar · Smart Inventory Management System</span>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/landing.js') }}"></script>
+</body>
+</html>
