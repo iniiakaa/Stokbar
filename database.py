@@ -34,8 +34,98 @@ def get_db_path():
     return os.path.join(base_dir, DB_NAME)
 
 
+class LibsqlRow:
+    def __init__(self, column_names, row_tuple):
+        self._column_names = column_names
+        self._row_tuple = row_tuple
+        self._dict = dict(zip(column_names, row_tuple))
+
+    def __getitem__(self, key):
+        if isinstance(key, int):
+            return self._row_tuple[key]
+        return self._dict[key]
+
+    def keys(self):
+        return self._column_names
+
+    def __iter__(self):
+        return iter(self._row_tuple)
+
+    def __repr__(self):
+        return repr(self._dict)
+
+
+class LibsqlCursorAdapter:
+    def __init__(self, client):
+        self.client = client
+        self.results = None
+        self.index = 0
+        self.column_names = []
+        self.lastrowid = None
+
+    def execute(self, query, params=None):
+        if params is None:
+            params = []
+        if isinstance(params, tuple):
+            params = list(params)
+        
+        # libsql-client supports standard sqlite "?" placeholder
+        self.results = self.client.execute(query, params)
+        self.index = 0
+        
+        if self.results and hasattr(self.results, "columns"):
+            self.column_names = [col.name if hasattr(col, "name") else col for col in self.results.columns]
+        else:
+            self.column_names = []
+            
+        self.lastrowid = getattr(self.results, "last_insert_rowid", None)
+        return self
+
+    def fetchone(self):
+        if not self.results or self.index >= len(self.results.rows):
+            return None
+        row_tuple = self.results.rows[self.index]
+        self.index += 1
+        return LibsqlRow(self.column_names, row_tuple)
+
+    def fetchall(self):
+        if not self.results:
+            return []
+        rows = []
+        for i in range(self.index, len(self.results.rows)):
+            rows.append(LibsqlRow(self.column_names, self.results.rows[i]))
+        self.index = len(self.results.rows)
+        return rows
+
+
+class LibsqlConnectionAdapter:
+    def __init__(self, client):
+        self.client = client
+        self.row_factory = None
+
+    def cursor(self):
+        return LibsqlCursorAdapter(self.client)
+
+    def commit(self):
+        pass
+
+    def close(self):
+        self.client.close()
+
+    def execute(self, query, params=None):
+        pass
+
+
 def get_connection():
-    """Membuat koneksi ke database SQLite."""
+    """Membuat koneksi ke database SQLite atau Turso Cloud."""
+    url = os.environ.get("TURSO_DATABASE_URL")
+    token = os.environ.get("TURSO_AUTH_TOKEN")
+    
+    if url:
+        import libsql_client
+        client = libsql_client.create_client_sync(url=url, auth_token=token)
+        return LibsqlConnectionAdapter(client)
+
     conn = sqlite3.connect(get_db_path())
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")
