@@ -17,6 +17,16 @@ DB_NAME = "stok_barang.db"
 
 def get_db_path():
     """Mendapatkan path database yang benar, baik saat development maupun saat .exe."""
+    if "VERCEL" in os.environ:
+        tmp_db_path = "/tmp/stok_barang.db"
+        if not os.path.exists(tmp_db_path):
+            import shutil
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            src_db_path = os.path.join(base_dir, DB_NAME)
+            if os.path.exists(src_db_path):
+                shutil.copy2(src_db_path, tmp_db_path)
+        return tmp_db_path
+
     if getattr(sys, "frozen", False):
         base_dir = os.path.dirname(sys.executable)
     else:
@@ -486,10 +496,8 @@ def export_to_xlsx(start_date=None, end_date=None):
         ]
 
         # Simpan ke folder yang sama dengan database
-        if getattr(sys, "frozen", False):
-            base_dir = os.path.dirname(sys.executable)
-        else:
-            base_dir = os.path.dirname(os.path.abspath(__file__))
+        db_path = get_db_path()
+        base_dir = os.path.dirname(db_path)
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"Laporan_Stok_{timestamp}.xlsx"
