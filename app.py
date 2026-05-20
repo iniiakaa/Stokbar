@@ -227,6 +227,13 @@ def api_export_xlsx():
 # Tambahkan ini agar Vercel dapat mendeteksi aplikasi Flask
 app = app
 
+if "VERCEL" in os.environ and os.environ.get("TURSO_DATABASE_URL"):
+    try:
+        db.init_db()
+        print("[Vercel] Turso Database initialized successfully.")
+    except Exception as e:
+        print(f"[Vercel] Turso Database initialization failed: {e}")
+
 if __name__ == "__main__":
     db.init_db()
     print("[Stokbar] Database siap.")
